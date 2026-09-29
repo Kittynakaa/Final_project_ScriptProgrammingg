@@ -6,7 +6,7 @@
 
 ---
 
-## [v0.3.0] — Sprint 3: Web Dashboard & GitHub Pages Deployment
+## [v.3] — Sprint 3: Web Dashboard & GitHub Pages Deployment
 ### Added
 - `index.html`: หน้าเว็บแดชบอร์ด client-side — อัปโหลดรูป → วิเคราะห์โทนผิว (skin mask + ITA ใน JavaScript) → แนะนำพาเลตสี
 - รองรับสองภาษา (TH/EN toggle) และดีไซน์ Glassmorphism
@@ -20,7 +20,7 @@
 
 ---
 
-## [v0.2.1] — Sprint 2 (เพิ่มเติม): External API Integration
+## [v.2.1] — Sprint 2 (เพิ่มเติม): External API Integration
 ### Added
 - `src/api_client.py` (`ColorApiClient`): เชื่อม External API (TheColorAPI) ดึงชื่อสีจริงของแต่ละโค้ดสีในพาเลต
 - ระบบ Defensive Fallback: ใช้ชื่อสีสำรองเมื่อ API ล่ม/ไม่มีเน็ต โปรแกรมไม่ล่ม
@@ -29,7 +29,7 @@
 
 ---
 
-## [v0.2.0] — Sprint 2: Image Analysis, Recommender & File I/O
+## [v.2.0] — Sprint 2: Image Analysis, Recommender & File I/O
 ### Added
 - `SkinAnalyzer`: ตรวจจับผิว (YCrCb + morphology) และประเมินโทนผิวด้วย ITA (CIE Lab)
 - `NailRecommender`: แนะนำสีแบบ rule-based พร้อม search / filter_by_tag / sort
