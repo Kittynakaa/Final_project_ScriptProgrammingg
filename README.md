@@ -153,8 +153,36 @@ pytest            # หรือ  python -m pytest
 
 ### 🌐 เว็บเดโม (GitHub Pages)
 เมื่อเปิด GitHub Pages แล้ว เข้าได้ที่: `https://<ชื่อผู้ใช้>.github.io/<ชื่อ repo>/`
+### 11. ## 📅 แผนการทำงานภาพรวม (3 Sprints Roadmap)
 
-## 11. เอกสารประกอบโครงการ (Project Docs)
+### Sprint 1: Core System Foundation & OOP CLI Architecture
+* **เป้าหมาย:** สร้างรากฐานสถาปัตยกรรมเชิงวัตถุ (OOP) แบบ 3 เลเยอร์ และ CLI Interface ที่รับ input อย่างปลอดภัย
+* **รายละเอียดงาน:**
+  - `src/models.py` : โมเดลข้อมูลหลัก `Suggestion`, `AnalysisResult`
+  - `src/cli.py` & `main.py` : หน้าต่างปฏิสัมพันธ์ Command Line Interface (2 โหมด) พร้อม Input Validation
+  - Exception Handling : ไฟล์ไม่พบ / ไฟล์ไม่ใช่รูป / Ctrl+C / Ctrl+D
+  - `docs/PLAN.md` : กำหนดขอบเขตงานและ Definition of Done
+
+### Sprint 2: Image Analysis, Recommender & File I/O
+* **เป้าหมาย:** วิเคราะห์ภาพเพื่อประเมินโทนผิว แนะนำสีแบบ rule-based และจัดเก็บข้อมูลถาวร
+* **รายละเอียดงาน:**
+  - `src/skin_analyzer.py` : ตรวจจับผิว (YCrCb + morphology) และประเมินโทนผิวด้วยค่า ITA ใน CIE Lab
+  - `src/recommender.py` : แนะนำสีแบบ rule-based + ค้นหา/กรอง/เรียง (data-driven จาก `data/palette_rules.json`)
+  - `src/palette_renderer.py` : วาดและบันทึกภาพพาเลตสีเป็นไฟล์ `.png`
+  - `src/data_store.py` : โหลดกฎพาเลต และบันทึกประวัติผลวิเคราะห์ลง `output/history.json`
+  - `tests/test_nail.py` : ชุดทดสอบระบบอัตโนมัติ (Automated pytest — 15 เคส ผ่าน 100%)
+  - `docs/LEARNINGLOG.md` : บันทึกการใช้ AI อย่างรับผิดชอบ (Gen AI Prompt Logs)
+
+### Sprint 3: Accuracy Tuning, Web Dashboard & GitHub Pages Deployment
+* **เป้าหมาย:** ปรับความแม่นยำการตรวจจับ พัฒนาหน้าเว็บ และระบบส่งมอบงานอัตโนมัติ
+* **รายละเอียดงาน:**
+  - ปรับความแม่นยำการแยกบริเวณ "เล็บ" ออกจากผิว และเก็บ Edge Cases เพิ่ม
+  - `index.html` : หน้าเว็บแดชบอร์ดอัปโหลดรูปและแสดงพาเลตสีที่แนะนำ (Sprint 3)
+  - `.github/workflows/ci.yml` : ระบบ CI/CD รัน `pytest` อัตโนมัติทุกครั้งที่ push/PR
+  - ต่อยอด AI : virtual try-on ทาสีบนเล็บจริง หรือโมเดลจำแนกโทนผิว/ทรงเล็บ
+
+
+## 12. เอกสารประกอบโครงการ (Project Docs)
 
 | ไฟล์ | เนื้อหา |
 |------|---------|
