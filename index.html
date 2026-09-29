@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nail Color Recommender — วิเคราะห์โทนผิว แนะนำสีทาเล็บ</title>
+<style>
+  :root{
+    --plum:#7A3B5D; --plum-dark:#2A1A2E; --rose:#C56B8B; --gold:#D4A24C;
+    --ink:#2A1A2E; --mute:#8A7580; --card:rgba(255,255,255,.72); --line:rgba(122,59,93,.18);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:-apple-system,"Segoe UI",Tahoma,sans-serif; color:var(--ink);
+    min-height:100vh; padding:0 16px 60px;
+    background:
+      radial-gradient(1100px 600px at 85% -10%, #C56B8B55, transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, #7A3B5D55, transparent 55%),
+      linear-gradient(160deg,#2A1A2E,#4a2b45 55%,#6d3a58);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:980px; margin:0 auto}
+  header{padding:40px 0 8px; text-align:center; color:#fff; position:relative}
+  .kicker{font-size:12px; letter-spacing:2px; color:var(--gold); font-weight:700}
+  h1{font-size:34px; margin:8px 0 6px; font-weight:800}
+  header p{margin:0; color:#E7D3DC; font-size:15px}
+  .lang{position:absolute; right:0; top:40px; display:flex; gap:2px;
+    background:rgba(255,255,255,.15); border-radius:999px; padding:3px}
+  .lang button{border:0; background:transparent; color:#fff; font-weight:700; font-size:12px;
+    padding:5px 12px; border-radius:999px; cursor:pointer}
+  .lang button.on{background:#fff; color:var(--plum)}
+
+  .glass{background:var(--card); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.5); border-radius:20px; padding:22px;
+    box-shadow:0 12px 40px rgba(42,26,46,.28); margin-top:20px}
+
+  .controls{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; align-items:end}
+  @media(max-width:640px){ .controls{grid-template-columns:1fr} h1{font-size:26px} .lang{position:static; justify-content:center; margin:10px auto 0; width:max-content} }
+  label{display:block; font-size:13px; font-weight:700; margin-bottom:6px; color:var(--plum)}
+  select,input[type=file]{width:100%; padding:11px 12px; border-radius:12px; border:1px solid var(--line);
+    background:#fff; font-size:14px; font-family:inherit; color:var(--ink)}
+  .btn{margin-top:16px; width:100%; border:0; cursor:pointer; font-size:16px; font-weight:800; color:#fff;
+    padding:14px; border-radius:14px; background:linear-gradient(120deg,var(--plum),var(--rose));
+    box-shadow:0 8px 20px rgba(122,59,93,.4); transition:transform .08s}
+  .btn:active{transform:scale(.99)}
+  .btn:disabled{opacity:.55; cursor:progress}
+
+  .result{display:none}
+  .toneRow{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-bottom:6px}
+  .toneBadge{font-size:20px; font-weight:800; padding:8px 18px; border-radius:999px; color:#fff}
+  .cool{background:#3f6fb5} .warm{background:#c9772f} .neutral{background:#6d6f77} .unknown{background:#999}
+  .meta{color:var(--mute); font-size:13px}
+  canvas{display:none}
+  .preview{max-width:150px; border-radius:14px; border:3px solid #fff; box-shadow:0 6px 16px rgba(0,0,0,.2)}
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px}
+  @media(max-width:640px){ .grid{grid-template-columns:1fr} }
+  .pal{border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#fff}
+  .swatches{display:flex; height:74px}
+  .swatch{flex:1; display:flex; align-items:flex-end; justify-content:center; padding-bottom:6px;
+    font-size:10px; font-weight:700; letter-spacing:.3px}
+  .pal .body{padding:11px 13px}
+  .pal .note{font-weight:800; font-size:14.5px; margin:0 0 4px}
+  .pal .cnames{font-size:11.5px; color:var(--mute); margin:0 0 7px; min-height:14px}
+  .tag{display:inline-block; font-size:10.5px; font-weight:700; color:var(--plum);
+    background:rgba(197,107,139,.16); padding:2px 9px; border-radius:999px; margin:0 5px 4px 0}
+  .src{margin-top:14px; font-size:12px; color:var(--mute); text-align:center}
+  footer{color:#E7D3DC; text-align:center; font-size:12px; margin-top:26px; opacity:.85}
+  .hint{font-size:12.5px; color:var(--mute); margin:8px 2px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="lang">
+      <button id="thBtn" class="on" onclick="setLang('th')">ไทย</button>
+      <button id="enBtn" onclick="setLang('en')">EN</button>
+    </div>
+    <div class="kicker">CP352301 · SCRIPT PROGRAMMING · FINAL PROJECT</div>
+    <h1 data-i18n="title">ระบบแนะนำสีทาเล็บจากโทนผิว</h1>
+    <p data-i18n="subtitle">อัปโหลดรูปมือ → วิเคราะห์โทนผิวด้วย Computer Vision → แนะนำพาเลตสีทาเล็บ</p>
+  </header>
+
+  <section class="glass">
+    <div class="controls">
+      <div>
+        <label data-i18n="lblImg">รูปมือ / เล็บ</label>
+        <input type="file" id="file" accept="image/*" />
+      </div>
+      <div>
+        <label data-i18n="lblShape">ทรงเล็บ</label>
+        <select id="shape">
+          <option value="round">round</option>
+          <option value="oval" selected>oval</option>
+          <option value="almond">almond</option>
+          <option value="square">square</option>
+          <option value="squoval">squoval</option>
+          <option value="stiletto">stiletto</option>
+        </select>
+      </div>
+      <div>
+        <label data-i18n="lblLen">ความยาว</label>
+        <select id="length">
+          <option value="short">short</option>
+          <option value="medium" selected>medium</option>
+          <option value="long">long</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" id="go" data-i18n="btn">🔍 วิเคราะห์และแนะนำสี</button>
+    <p class="hint" data-i18n="hint">* การวิเคราะห์ทำงานในเบราว์เซอร์ทั้งหมด (client-side) รองรับการรันบน GitHub Pages</p>
+  </section>
+
+  <section class="glass result" id="result">
+    <div class="toneRow">
+      <img id="preview" class="preview" alt="preview" />
+      <div>
+        <span id="toneBadge" class="toneBadge">—</span>
+        <div class="meta" id="toneMeta"></div>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="src" id="src"></div>
+  </section>
+
+  <footer>Nail Color Recommender · CIE Lab / ITA + Rule-based · TheColorAPI</footer>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+/* ===================== i18n ===================== */
+const I18N = {
+  th:{title:"ระบบแนะนำสีทาเล็บจากโทนผิว", subtitle:"อัปโหลดรูปมือ → วิเคราะห์โทนผิวด้วย Computer Vision → แนะนำพาเลตสีทาเล็บ",
+      lblImg:"รูปมือ / เล็บ", lblShape:"ทรงเล็บ", lblLen:"ความยาว", btn:"🔍 วิเคราะห์และแนะนำสี",
+      hint:"* การวิเคราะห์ทำงานในเบราว์เซอร์ทั้งหมด (client-side) รองรับการรันบน GitHub Pages",
+      undertone:"โทนผิว", ita:"ITA", noimg:"กรุณาเลือกรูปก่อน", analyzing:"กำลังวิเคราะห์...",
+      low:"(ตรวจพบผิวน้อย — ประเมินจากทั้งภาพ)", srcApi:"ชื่อสีจาก TheColorAPI (ออนไลน์)", srcFb:"ชื่อสีจากข้อมูลสำรอง (fallback)"},
+  en:{title:"Nail Color Recommender", subtitle:"Upload a hand photo → analyze skin undertone with Computer Vision → recommend nail palettes",
+      lblImg:"Hand / Nail image", lblShape:"Nail shape", lblLen:"Length", btn:"🔍 Analyze & Recommend",
+      hint:"* All analysis runs in your browser (client-side) — works on GitHub Pages",
+      undertone:"Undertone", ita:"ITA", noimg:"Please choose an image first", analyzing:"Analyzing...",
+      low:"(few skin pixels — estimated from whole image)", srcApi:"Color names from TheColorAPI (online)", srcFb:"Color names from fallback data"}
+};
+let LANG="th";
+function setLang(l){
+  LANG=l; document.documentElement.lang=l;
+  document.getElementById("thBtn").classList.toggle("on", l==="th");
+  document.getElementById("enBtn").classList.toggle("on", l==="en");
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = I18N[l][el.getAttribute("data-i18n")]; });
+}
+const T = ()=>I18N[LANG];
+
+/* ============ palette rules (same as data/palette_rules.json) ============ */
+const RULES = {
+  undertone:{
+    cool:[
+      {palette:["#C3C7FF","#EDEBFF"],tags:["pastel","cool","minimal"],note:"พาสเทลเย็น/มุกเงิน"},
+      {palette:["#FFB3D1","#9AD0F5"],tags:["duo","cool"],note:"ชมพูเย็น + ฟ้าอ่อน"},
+      {palette:["#FFFFFF","#BFC6D1"],tags:["chrome","silver"],note:"เงิน/โครมเงิน"},
+      {palette:["#E6E6FA","#FFB6C1"],tags:["pastel","cool"],note:"พาสเทลม่วงลาเวนเดอร์ + ชมพูเย็น"},
+      {palette:["#98FF98","#40E0D0"],tags:["duo","cool"],note:"มิ้นต์เขียว + ฟ้าคราม"},
+      {palette:["#8B0000","#0F52BA"],tags:["jewel","cool"],note:"แดงอมฟ้า + น้ำเงินอัญมณี"},
+      {palette:["#C0C0C0","#FFFFFF"],tags:["metallic","cool"],note:"เงินไอซี่ + ขาว"},
+      {palette:["#4B0082","#800080"],tags:["plum","cool"],note:"ม่วงพลัมเข้ม + ม่วงบริสุทธิ์"}
+    ],
+    warm:[
+      {palette:["#F2C6A0","#E8A87C"],tags:["nude","warm"],note:"นู้ดพีช/คาราเมล"},
+      {palette:["#B8860B","#FFD700"],tags:["gold","accent"],note:"ทอง/กลิทเตอร์ทอง"},
+      {palette:["#6B8E23","#4B5320"],tags:["olive","earthy"],note:"เขียวมะกอก"},
+      {palette:["#B22222","#FFA07A"],tags:["warm","classic"],note:"แดงอิฐ + พีชอมส้ม"},
+      {palette:["#FFDB58","#FFD700"],tags:["gold","warm"],note:"เหลืองมัสตาร์ด + ทองอุ่น"},
+      {palette:["#CC5500","#B8860B"],tags:["earthy","warm"],note:"ส้มเข้ม + น้ำตาลทอง"},
+      {palette:["#FF7F50","#FFDAB9"],tags:["coral","warm"],note:"ปะการัง + พีชนู้ด"},
+      {palette:["#6B8E23","#808000"],tags:["olive","warm"],note:"เขียวมะกอก + เขียวอ่อนเอิร์ธโทน"}
+    ],
+    neutral:[
+      {palette:["#F5E6DC","#E3C4B5"],tags:["nude","neutral"],note:"นู้ดชมพู/โทนกลาง"},
+      {palette:["#C00021","#8B0016"],tags:["classic","red"],note:"แดงคลาสสิก"},
+      {palette:["#FDF5F8","#E2D7FF"],tags:["soft","pastel"],note:"พาสเทลนุ่ม"},
+      {palette:["#FF0000","#800020"],tags:["classic","neutral"],note:"แดงคลาสสิก + แดงไวน์"},
+      {palette:["#000080","#50C878"],tags:["bold","neutral"],note:"น้ำเงินเนวี่ + เขียวมรกต"},
+      {palette:["#483C32","#C0C0C0"],tags:["nude","metallic"],note:"นู้ดเทา + เงินเมทัลลิก"},
+      {palette:["#F5CBA7","#FADBD8"],tags:["blush","neutral"],note:"ชมพูบลัช + ชมพูอ่อน"},
+      {palette:["#36454F","#808080"],tags:["gray","neutral"],note:"เทาชาร์โคล + เทากลาง"}
+    ]
+  },
+  shape_length:{
+    micro_french:{palette:["#F2EFEA"],tags:["micro-french"],note:"micro-French ขอบบางเพราะเล็บสั้น"},
+    oval_almond:{palette:["#FBE9E7","#FFE0B2"],tags:["ombre","vertical"],note:"ombré แนวตั้งสีละมุนนุ่ม"},
+    square:{palette:["#FFFFFF","#000000"],tags:["geo","contrast"],note:"เส้นหนา/กราฟิกขาวดำ"},
+    long:{palette:["#2E2A2A","#D4AF37"],tags:["statement","3d"],note:"ปั้นนูน 3D สำหรับเล็บยาว"}
+  }
+};
+const FALLBACK={ "#C3C7FF":"Periwinkle","#EDEBFF":"Lavender Mist","#FFB3D1":"Cotton Candy","#9AD0F5":"Baby Blue","#FFFFFF":"White","#BFC6D1":"Silver Grey","#E6E6FA":"Lavender","#FFB6C1":"Light Pink","#98FF98":"Mint Green","#40E0D0":"Turquoise","#8B0000":"Dark Red","#0F52BA":"Sapphire","#C0C0C0":"Silver","#4B0082":"Indigo","#800080":"Purple","#F2C6A0":"Peach","#E8A87C":"Caramel","#B8860B":"Dark Goldenrod","#FFD700":"Gold","#6B8E23":"Olive Drab","#4B5320":"Army Green","#B22222":"Firebrick","#FFA07A":"Light Salmon","#FFDB58":"Mustard","#CC5500":"Burnt Orange","#FF7F50":"Coral","#FFDAB9":"Peach Puff","#808000":"Olive","#F5E6DC":"Nude","#E3C4B5":"Rose Beige","#C00021":"Crimson","#8B0016":"Dark Crimson","#FDF5F8":"Snow Pink","#E2D7FF":"Pale Lilac","#FF0000":"Red","#800020":"Burgundy","#000080":"Navy","#50C878":"Emerald","#483C32":"Taupe","#F5CBA7":"Apricot","#FADBD8":"Blush","#36454F":"Charcoal","#808080":"Grey","#F2EFEA":"Ivory","#FBE9E7":"Seashell","#FFE0B2":"Light Apricot","#000000":"Black","#2E2A2A":"Jet Black","#D4AF37":"Metallic Gold" };
+
+/* ============ recommender (mirror src/recommender.py) ============ */
+function build(list){ return list.map(d=>({palette:[...d.palette],tags:[...d.tags],note:d.note})); }
+function suggest(undertone, shape, length){
+  let recs = build(RULES.undertone[undertone] || RULES.undertone.neutral);
+  const sl = RULES.shape_length;
+  if(["round","short"].includes(shape) || length==="short") recs = build([sl.micro_french]).concat(recs);
+  else if(["oval","almond"].includes(shape)) recs = build([sl.oval_almond]).concat(recs);
+  else if(["square","squoval"].includes(shape)) recs = build([sl.square]).concat(recs);
+  else recs = build([sl.long]).concat(recs);
+  const seen=new Set(), uniq=[];
+  for(const s of recs){ const k=s.palette.join()+"|"+s.tags.join(); if(!seen.has(k)){seen.add(k);uniq.push(s);} }
+  return uniq.slice(0,6);
+}
+
+/* ============ image analysis: skin mask + ITA (mirror src/skin_analyzer.py) ============ */
+function rgb2lab(r,g,b){
+  r/=255;g/=255;b/=255;
+  r = r>0.04045?Math.pow((r+0.055)/1.055,2.4):r/12.92;
+  g = g>0.04045?Math.pow((g+0.055)/1.055,2.4):g/12.92;
+  b = b>0.04045?Math.pow((b+0.055)/1.055,2.4):b/12.92;
+  let x=(r*0.4124+g*0.3576+b*0.1805)/0.95047;
+  let y=(r*0.2126+g*0.7152+b*0.0722)/1.0;
+  let z=(r*0.0193+g*0.1192+b*0.9505)/1.08883;
+  const f=t=>t>0.008856?Math.cbrt(t):(7.787*t+16/116);
+  x=f(x);y=f(y);z=f(z);
+  return [116*y-16, 500*(x-y), 200*(y-z)];
+}
+function classifyITA(ita){ if(ita>=28)return "cool"; if(ita<=10)return "warm"; return "neutral"; }
+function analyze(img){
+  const cv=document.getElementById("canvas"); const ctx=cv.getContext("2d");
+  const W=Math.min(img.naturalWidth,400); const scale=W/img.naturalWidth; const H=Math.round(img.naturalHeight*scale);
+  cv.width=W; cv.height=H; ctx.drawImage(img,0,0,W,H);
+  const data=ctx.getImageData(0,0,W,H).data;
+  let sr=0,sg=0,sb=0,skin=0, ar=0,ag=0,ab=0,all=0;
+  for(let i=0;i<data.length;i+=4){
+    const r=data[i],g=data[i+1],b=data[i+2];
+    ar+=r;ag+=g;ab+=b;all++;
+    const y=0.299*r+0.587*g+0.114*b;
+    const cr=(r-y)*0.713+128, cb=(b-y)*0.564+128;
+    if(cr>=133&&cr<=173&&cb>=77&&cb<=127){ sr+=r;sg+=g;sb+=b;skin++; }
+  }
+  let low=false, R,G,B;
+  if(skin>=200){ R=sr/skin;G=sg/skin;B=sb/skin; }
+  else { low=true; R=ar/all;G=ag/all;B=ab/all; }
+  const [L,,bb]=rgb2lab(R,G,B);
+  const ita=Math.atan2(L-50, Math.abs(bb)>1e-3?bb:1e-3)*180/Math.PI;
+  return {tone:classifyITA(ita), ita, low};
+}
+
+/* ============ color names via TheColorAPI (defensive) ============ */
+async function colorName(hex){
+  try{
+    const c=new AbortController(); const t=setTimeout(()=>c.abort(),4000);
+    const res=await fetch("https://www.thecolorapi.com/id?hex="+hex.replace("#",""),{signal:c.signal});
+    clearTimeout(t);
+    if(!res.ok) throw 0;
+    const d=await res.json();
+    if(d&&d.name&&d.name.value){ window.__apiOK=true; return d.name.value; }
+  }catch(e){}
+  window.__apiFB=true;
+  return FALLBACK[hex.toUpperCase()]||hex.toUpperCase();
+}
+
+/* ============ render ============ */
+function textColor(hex){
+  const h=hex.replace("#","");const r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);
+  return (0.299*r+0.587*g+0.114*b)>140?"#333":"#fff";
+}
+async function render(res, sugs){
+  const badge=document.getElementById("toneBadge");
+  badge.textContent=res.tone.toUpperCase(); badge.className="toneBadge "+res.tone;
+  document.getElementById("toneMeta").textContent =
+    `${T().undertone}: ${res.tone}  ·  ${T().ita} ≈ ${res.ita.toFixed(1)} ${res.low?T().low:""}`;
+  const grid=document.getElementById("grid"); grid.innerHTML="";
+  window.__apiOK=false; window.__apiFB=false;
+  sugs.forEach((s,idx)=>{
+    const card=document.createElement("div"); card.className="pal";
+    const sw=s.palette.map(hx=>`<div class="swatch" style="background:${hx};color:${textColor(hx)}">${hx.toUpperCase()}</div>`).join("");
+    const tags=s.tags.map(t=>`<span class="tag">${t}</span>`).join("");
+    card.innerHTML=`<div class="swatches">${sw}</div><div class="body">
+      <p class="note">${idx+1}. ${s.note}</p><p class="cnames" id="cn${idx}"></p>${tags}</div>`;
+    grid.appendChild(card);
+  });
+  document.getElementById("result").style.display="block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth"});
+  // fetch color names async
+  for(let i=0;i<sugs.length;i++){
+    const names=[]; for(const hx of sugs[i].palette){ names.push(await colorName(hx)); }
+    const el=document.getElementById("cn"+i); if(el) el.textContent="🎨 "+names.join(" · ");
+  }
+  document.getElementById("src").textContent = window.__apiOK ? T().srcApi : T().srcFb;
+}
+
+/* ============ wire up ============ */
+let imgEl=null;
+document.getElementById("file").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const url=URL.createObjectURL(f);
+  imgEl=new Image(); imgEl.onload=()=>{ document.getElementById("preview").src=url; };
+  imgEl.src=url;
+});
+document.getElementById("go").addEventListener("click", async ()=>{
+  if(!imgEl){ alert(T().noimg); return; }
+  const btn=document.getElementById("go"); const old=btn.textContent;
+  btn.disabled=true; btn.textContent=T().analyzing;
+  try{
+    const res=analyze(imgEl);
+    const sugs=suggest(res.tone, document.getElementById("shape").value, document.getElementById("length").value);
+    await render(res, sugs);
+  } finally { btn.disabled=false; btn.textContent=old; }
+});
+</script>
+</body>
+</html>

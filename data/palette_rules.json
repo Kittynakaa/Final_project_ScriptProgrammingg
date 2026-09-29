@@ -1,0 +1,40 @@
+{
+  "undertone": {
+    "cool": [
+      {"palette": ["#C3C7FF", "#EDEBFF"], "tags": ["pastel", "cool", "minimal"], "note": "พาสเทลเย็น/มุกเงิน"},
+      {"palette": ["#FFB3D1", "#9AD0F5"], "tags": ["duo", "cool"], "note": "ชมพูเย็น + ฟ้าอ่อน"},
+      {"palette": ["#FFFFFF", "#BFC6D1"], "tags": ["chrome", "silver"], "note": "เงิน/โครมเงิน"},
+      {"palette": ["#E6E6FA", "#FFB6C1"], "tags": ["pastel", "cool"], "note": "พาสเทลม่วงลาเวนเดอร์ + ชมพูเย็น"},
+      {"palette": ["#98FF98", "#40E0D0"], "tags": ["duo", "cool"], "note": "มิ้นต์เขียว + ฟ้าคราม"},
+      {"palette": ["#8B0000", "#0F52BA"], "tags": ["jewel", "cool"], "note": "แดงอมฟ้า + น้ำเงินอัญมณี"},
+      {"palette": ["#C0C0C0", "#FFFFFF"], "tags": ["metallic", "cool"], "note": "เงินไอซี่ + ขาว"},
+      {"palette": ["#4B0082", "#800080"], "tags": ["plum", "cool"], "note": "ม่วงพลัมเข้ม + ม่วงบริสุทธิ์"}
+    ],
+    "warm": [
+      {"palette": ["#F2C6A0", "#E8A87C"], "tags": ["nude", "warm"], "note": "นู้ดพีช/คาราเมล"},
+      {"palette": ["#B8860B", "#FFD700"], "tags": ["gold", "accent"], "note": "ทอง/กลิทเตอร์ทอง"},
+      {"palette": ["#6B8E23", "#4B5320"], "tags": ["olive", "earthy"], "note": "เขียวมะกอก"},
+      {"palette": ["#B22222", "#FFA07A"], "tags": ["warm", "classic"], "note": "แดงอิฐ + พีชอมส้ม"},
+      {"palette": ["#FFDB58", "#FFD700"], "tags": ["gold", "warm"], "note": "เหลืองมัสตาร์ด + ทองอุ่น"},
+      {"palette": ["#CC5500", "#B8860B"], "tags": ["earthy", "warm"], "note": "ส้มเข้ม + น้ำตาลทอง"},
+      {"palette": ["#FF7F50", "#FFDAB9"], "tags": ["coral", "warm"], "note": "ปะการัง + พีชนู้ด"},
+      {"palette": ["#6B8E23", "#808000"], "tags": ["olive", "warm"], "note": "เขียวมะกอก + เขียวอ่อนเอิร์ธโทน"}
+    ],
+    "neutral": [
+      {"palette": ["#F5E6DC", "#E3C4B5"], "tags": ["nude", "neutral"], "note": "นู้ดชมพู/โทนกลาง"},
+      {"palette": ["#C00021", "#8B0016"], "tags": ["classic", "red"], "note": "แดงคลาสสิก"},
+      {"palette": ["#FDF5F8", "#E2D7FF"], "tags": ["soft", "pastel"], "note": "พาสเทลนุ่ม"},
+      {"palette": ["#FF0000", "#800020"], "tags": ["classic", "neutral"], "note": "แดงคลาสสิก + แดงไวน์"},
+      {"palette": ["#000080", "#50C878"], "tags": ["bold", "neutral"], "note": "น้ำเงินเนวี่ + เขียวมรกต"},
+      {"palette": ["#483C32", "#C0C0C0"], "tags": ["nude", "metallic"], "note": "นู้ดเทา + เงินเมทัลลิก"},
+      {"palette": ["#F5CBA7", "#FADBD8"], "tags": ["blush", "neutral"], "note": "ชมพูบลัช + ชมพูอ่อน"},
+      {"palette": ["#36454F", "#808080"], "tags": ["gray", "neutral"], "note": "เทาชาร์โคล + เทากลาง"}
+    ]
+  },
+  "shape_length": {
+    "micro_french": {"palette": ["#F2EFEA"], "tags": ["micro-french"], "note": "micro-French ขอบบางเพราะเล็บสั้น", "position": "append"},
+    "oval_almond": {"palette": ["#FBE9E7", "#FFE0B2"], "tags": ["ombre", "vertical"], "note": "ombré แนวตั้งสีละมุนนุ่ม", "position": "prepend"},
+    "square": {"palette": ["#FFFFFF", "#000000"], "tags": ["geo", "contrast"], "note": "เส้นหนา/กราฟิกขาวดำหรือลายตารางขาวดำ", "position": "prepend"},
+    "long": {"palette": ["#2E2A2A", "#D4AF37"], "tags": ["statement", "3d"], "note": "ปั้นนูน 3D สำหรับเล็บยาว", "position": "prepend"}
+  }
+}

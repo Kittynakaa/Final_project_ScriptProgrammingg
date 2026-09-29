@@ -1,0 +1,15 @@
+# ไลบรารีสำหรับประมวลผลภาพและแสดงผล
+opencv-python-headless>=4.9
+numpy>=1.24
+Pillow>=10.0
+matplotlib>=3.7
+
+# เชื่อมต่อ External API (TheColorAPI) เพื่อดึงชื่อสีจริง
+requests>=2.28
+
+# สำหรับรันชุดทดสอบอัตโนมัติ (optional)
+pytest>=7.0
+
+# ใช้เฉพาะเวอร์ชันโน้ตบุ๊กบน Google Colab (ipywidgets, pillow-heif)
+# ติดตั้งเพิ่มเมื่อรันบน Colab เท่านั้น:
+# pip install ipywidgets pillow-heif
