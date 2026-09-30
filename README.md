@@ -152,7 +152,7 @@ pytest            # หรือ  python -m pytest
 - ต่อยอด AI: virtual try-on ทาสีบนเล็บจริง / โมเดลจำแนกโทนผิว-ทรงเล็บอัตโนมัติ
 
 ### 🌐 เว็บเดโม (GitHub Pages)
-เมื่อเปิด GitHub Pages แล้ว เข้าได้ที่: `https://<ชื่อผู้ใช้>.github.io/<ชื่อ repo>/`
+เมื่อเปิด GitHub Pages แล้ว เข้าได้ที่: `file:///Users/kitty/Downloads/nail_project%202/index.html`
 ### 11. ## 📅 แผนการทำงานภาพรวม (3 Sprints Roadmap)
 
 ### Sprint 1: Core System Foundation & OOP CLI Architecture
