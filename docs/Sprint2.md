@@ -3,10 +3,10 @@
 **Project Name:** ระบบแนะนำสีทาเล็บจากโทนผิว (Nail Color Recommender)
 **Sprint:** 2 (Back-End — Image Analysis, Recommender, External API & File I/O)
 **Team Members:**
-- Planner / Team Leader: _____________
-- Coder: _____________
-- Debugger: _____________
-
+- Planner : สาริษฐ์ บุตรช่วง
+- Coder:  ชาคริต อ่วมอ่ำ 
+- Debugger: เมธาวี สิทธิชัยเนตร 
+- Debugger:  อภิสรา นครสุข
 ---
 
 ## 1. Sprint Progress Summary
