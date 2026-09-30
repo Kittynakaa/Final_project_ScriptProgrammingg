@@ -2,7 +2,7 @@
 
 ตารางเคสทดสอบฉบับเต็ม (Automated + Manual) ผลล่าสุด: **ผ่านทั้งหมด**
 
-## A. Automated Unit Tests (`pytest`, 15 เคส)
+## A. Automated Unit Tests (`pytest`, 17 เคส)
 
 | # | เคสทดสอบ | อินพุต | ผลที่คาดหวัง | สถานะ |
 |---|----------|--------|--------------|-------|
@@ -21,6 +21,8 @@
 | A13 | filter ตามแท็ก | tag "cool" | คืนเฉพาะแท็ก cool | PASSED |
 | A14 | sort ตามจำนวนสี | ชุดคำแนะนำ | เรียงมาก→น้อย | PASSED |
 | A15 | dedupe รายการซ้ำ | 2 รายการเหมือนกัน | เหลือ 1 | PASSED |
+| A16 | มีชื่อสีสำรอง (fallback) | "#FFFFFF", "#C3C7FF" | "White", "Periwinkle" | PASSED |
+| A17 | เชื่อม API คืนโครงสร้างถูก | palette 2 สี | คืน (hex, ชื่อสี) ครบทุกสี | PASSED |
 
 ## B. Manual / Integration Test Cases
 
